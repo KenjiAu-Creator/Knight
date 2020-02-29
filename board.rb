@@ -168,8 +168,50 @@ module ChessKnight
 
     def move(input_array, output_array)
       start_space = self.find(input_array[0],input_array[1])
-      puts start_space.knight_move1.value
       end_space = self.find(output_array[0],output_array[1])
+      queue = []
+      current = start_space
+      move_count = 0
+      path = []
+
+      while !(current == end_space)
+        path.push(current)
+        if !(current.knight_move1.nil?)
+          queue.push(current.knight_move1)
+        end
+
+        if !(current.knight_move2.nil?)
+          queue.push(current.knight_move2)
+        end
+
+        if !(current.knight_move3.nil?)
+          queue.push(current.knight_move3)
+        end
+
+        if !(current.knight_move4.nil?)
+          queue.push(current.knight_move4)
+        end
+
+        if !(current.knight_move5.nil?)
+          queue.push(current.knight_move5)
+        end
+
+        if !(current.knight_move6.nil?)
+          queue.push(current.knight_move6)
+        end
+
+        if !(current.knight_move7.nil?)
+          queue.push(current.knight_move7)
+        end
+
+        if !(current.knight_move8.nil?)
+          queue.push(current.knight_move8)
+        end
+        
+        current = queue.shift
+        move_count += 1
+      end
+      puts path.to_json
     end
 
     def possible_knight_moves
