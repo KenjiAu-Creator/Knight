@@ -1,7 +1,7 @@
 module ChessKnight
   class BoardSpace
     require 'json'
-    attr_accessor :row,:col,:value,:next,:knight_move1,:knight_move2,:knight_move3,:knight_move4,:knight_move5,:knight_move6,:knight_move7,:knight_move8
+    attr_accessor :parent, :row,:col,:value,:next,:knight_move1,:knight_move2,:knight_move3,:knight_move4,:knight_move5,:knight_move6,:knight_move7,:knight_move8
 
     def initialize(value, row, col)
         @value = value.to_i
@@ -57,6 +57,12 @@ module ChessKnight
     end
 
     def to_json(*args)
+      if @parent.nil?
+        parent = nil
+      else
+        parent = @parent.value
+      end
+
       if @value.nil?
         value = nil
       else
@@ -117,9 +123,14 @@ module ChessKnight
         move8 = @knight_move8.value
       end
 
-      { 'Starting Space' => value,
-        'knight moves' => [move1, move2, move3, move4, move5, move6, move7, move8],
+      { 'Board Space' => value,
+        # 'Parent' => parent,
+        # 'knight moves' => [move1, move2, move3, move4, move5, move6, move7, move8],
       }.to_json(*args)
+    end
+    
+    def parent_set(space)
+      @parent = space
     end
   end
 
@@ -167,51 +178,87 @@ module ChessKnight
     end
 
     def move(input_array, output_array)
+      # BFS Approach
       start_space = self.find(input_array[0],input_array[1])
       end_space = self.find(output_array[0],output_array[1])
       queue = []
       current = start_space
-      move_count = 0
-      path = []
+      order = []
 
       while !(current == end_space)
-        path.push(current)
         if !(current.knight_move1.nil?)
+          unless current.knight_move1 == current.parent
+            current.knight_move1.parent_set(current)
+          end
           queue.push(current.knight_move1)
         end
 
         if !(current.knight_move2.nil?)
+          unless current.knight_move2 == current.parent
+            current.knight_move2.parent_set(current)
+          end
           queue.push(current.knight_move2)
         end
 
         if !(current.knight_move3.nil?)
+          unless current.knight_move3 == current.parent
+            current.knight_move3.parent_set(current)
+          end
           queue.push(current.knight_move3)
         end
 
         if !(current.knight_move4.nil?)
+          unless current.knight_move4 == current.parent
+            current.knight_move4.parent_set(current)
+          end
           queue.push(current.knight_move4)
         end
 
         if !(current.knight_move5.nil?)
+          unless current.knight_move5 == current.parent
+            current.knight_move5.parent_set(current)
+          end
           queue.push(current.knight_move5)
         end
 
         if !(current.knight_move6.nil?)
+          unless current.knight_move6 == current.parent
+            current.knight_move6.parent_set(current)
+          end
           queue.push(current.knight_move6)
         end
 
         if !(current.knight_move7.nil?)
+          unless current.knight_move7 == current.parent
+            current.knight_move7.parent_set(current)
+          end
           queue.push(current.knight_move7)
         end
 
         if !(current.knight_move8.nil?)
+          unless current.knight_move8 == current.parent
+            current.knight_move8.parent_set(current)
+          end
           queue.push(current.knight_move8)
         end
         
         current = queue.shift
-        move_count += 1
       end
-      puts path.to_json
+      
+      until (current == start_space)
+        order.push(current)
+        current = current.parent
+      end
+
+      order.push(current)
+      order.reverse!
+      steps = order.length
+      puts "You made it in #{steps} moves! Heres your path:"
+      order.each do |space|
+        boardSpace = space.value.to_s
+        puts "[#{boardSpace[0]},#{boardSpace[1]}]"
+      end
+
     end
 
     def possible_knight_moves
@@ -232,5 +279,5 @@ module ChessKnight
 end
 
 ExampleBoard = ChessKnight::Board.new
-ExampleBoard.knight1.move([1,2],[2,1])
+ExampleBoard.knight1.move([7,5],[1,3])
 
