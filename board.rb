@@ -57,6 +57,12 @@ module ChessKnight
     end
 
     def to_json(*args)
+      if @parent.nil?
+        parent = nil
+      else
+        parent = @parent
+      end
+
       if @value.nil?
         value = nil
       else
@@ -174,44 +180,71 @@ module ChessKnight
       move_count = 0
       path = []
 
-      while !(current == end_space)
-        path.push(current)
-        if !(current.knight_move1.nil?)
-          queue.push(current.knight_move1)
-        end
-
-        if !(current.knight_move2.nil?)
-          queue.push(current.knight_move2)
-        end
-
-        if !(current.knight_move3.nil?)
-          queue.push(current.knight_move3)
-        end
-
-        if !(current.knight_move4.nil?)
-          queue.push(current.knight_move4)
-        end
-
-        if !(current.knight_move5.nil?)
-          queue.push(current.knight_move5)
-        end
-
-        if !(current.knight_move6.nil?)
-          queue.push(current.knight_move6)
-        end
-
-        if !(current.knight_move7.nil?)
-          queue.push(current.knight_move7)
-        end
-
-        if !(current.knight_move8.nil?)
-          queue.push(current.knight_move8)
-        end
-        
-        current = queue.shift
-        move_count += 1
+      while !(current.knight_move1.nil?)
+        queue.push(current)
+        current = current.knight_move1
       end
-      puts path.to_json
+
+      while !queue.empty?
+        current = queue[]
+
+        if current == end_space
+          queue.push(current)
+          return queue
+        end
+
+        if !current.knight_move2.nil?
+          if current.knight_move2 == end_space
+            queue.push(current.knight_move2)
+            return queue
+          end
+        end
+
+        if !current.knight_move3.nil?
+          if current.knight_move3 == end_space
+            queue.push(current.knight_move3)
+            return queue
+          end
+        end
+
+        if !current.knight_move4.nil?
+          if current.knight_move4 == end_space
+            queue.push(current.knight_move4)
+            return queue
+          end
+        end
+
+        if !current.knight_move5.nil?
+          if current.knight_move5 == end_space
+            queue.push(current.knight_move5)
+            return queue
+          end
+        end
+
+        if !current.knight_move6.nil?
+          if current.knight_move6 == end_space
+            queue.push(current.knight_move6)
+            return queue
+          end
+        end
+
+        if !current.knight_move7.nil?
+          if current.knight_move7 == end_space
+            queue.push(current.knight_move7)
+            return queue
+          end
+        end
+
+        if !current.knight_move8.nil?
+          if current.knight_move8 == end_space
+            queue.push(current.knight_move8)
+            return queue
+          end
+        end
+
+        remove = queue.pop  
+      end
+
     end
 
     def possible_knight_moves
@@ -232,5 +265,5 @@ module ChessKnight
 end
 
 ExampleBoard = ChessKnight::Board.new
-ExampleBoard.knight1.move([1,2],[2,1])
+puts ExampleBoard.knight1.move([1,2],[6,6]).to_json
 
